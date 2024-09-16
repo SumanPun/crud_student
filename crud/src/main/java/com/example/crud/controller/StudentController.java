@@ -1,5 +1,6 @@
 package com.example.crud.controller;
 
+import com.example.crud.dto.StudentDto;
 import com.example.crud.entity.Student;
 import com.example.crud.services.StudentService;
 import org.springframework.stereotype.Controller;
@@ -30,17 +31,17 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public String CreateStudent(@ModelAttribute Student student, BindingResult result){
+    public String CreateStudent(@ModelAttribute StudentDto student, BindingResult result){
         if(result.hasErrors()){
             return "students/create";
         }
-        studentService.saveStudent(student);
+        this.studentService.saveStudent(student);
         return "redirect:/students";
     }
 
     @GetMapping("/edit/{id}")
     public String editStudentForm(@PathVariable Integer id, Model model){
-        Student student = studentService.getStudentById(id);
+        StudentDto student = studentService.getStudentById(id);
         if(student != null){
             model.addAttribute("student", student);
             return "students/edit";
@@ -49,7 +50,7 @@ public class StudentController {
     }
 
     @PostMapping("/edit/{id}")
-    public String updateStudent(@PathVariable Integer id, @ModelAttribute Student student, BindingResult result){
+    public String updateStudent(@PathVariable Integer id, @ModelAttribute StudentDto student, BindingResult result){
         if(result.hasErrors()){
             return "students/edit";
         }
