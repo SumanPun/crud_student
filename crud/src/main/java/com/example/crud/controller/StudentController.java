@@ -21,7 +21,7 @@ public class StudentController {
     @GetMapping
     public String listStudents(Model model){
         model.addAttribute("students", studentService.getAllStudents());
-        return "students";
+        return "students/index";
     }
 
     @GetMapping("/create")

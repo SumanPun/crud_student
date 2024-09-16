@@ -11,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface StudentRepository extends JpaRepository<Student, Integer> {
 
-    @Query("Select s from Student s where s.id= :id")
-    Optional<Student> getStudentById(@Param("id") Integer id);
+    @Query("Select s from Student s where s.id= ?1")
+    Optional<Student> getStudentById(Integer id);
 }

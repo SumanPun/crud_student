@@ -11,13 +11,6 @@
 <body>
   <div class="container">
     <h2 class="my-4">Create New Student</h2>
-<!--    <div th:if="${#fields.hasError()}">-->
-<!--        <div class="alert alert-danger">-->
-<!--            <u>-->
-<!--              <li th:each="err : ${}#fields.errors('*')}" th:text="${err}}"></li>-->
-<!--            </u>-->
-<!--        </div>-->
-<!--    </div>-->
     <form th:action="@{/students/create}" th:object="${student}" method="post" class="form">
   <div class="mb-3 mt-3">
     <label for="email" class="form-label">Email:</label>
