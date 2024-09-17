@@ -3,6 +3,7 @@ package com.example.crud.services.impl;
 
 import com.example.crud.dto.StudentDto;
 import com.example.crud.entity.Student;
+import com.example.crud.exceptions.ResourceNotFoundException;
 import com.example.crud.repository.StudentRepository;
 import com.example.crud.services.StudentService;
 import org.springframework.stereotype.Service;
@@ -32,14 +33,14 @@ public class StudentServiceImpl implements StudentService {
     }
 
     public StudentDto getStudentById(Integer id){
-        Student student = studentRepository.getStudentById(id)
-               .orElseThrow(()-> new IllegalArgumentException("Student not found: "+id));
+         Student student = studentRepository.getStudentById(id)
+               .orElseThrow(()-> new ResourceNotFoundException("student","id",id));
         return getStudentDto(student);
     }
 
     public StudentDto updateStudent(Integer id, StudentDto student){
         Student getStudent = studentRepository.findById(id)
-                .orElseThrow(()-> new IllegalArgumentException("Student not found"+id));
+                .orElseThrow(()-> new ResourceNotFoundException("student","id",id));
         getStudent.setAge(student.getAge());
         getStudent.setAddress(student.getAddress());
         getStudent.setEmail(student.getEmail());

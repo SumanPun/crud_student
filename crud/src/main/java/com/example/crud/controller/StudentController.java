@@ -3,10 +3,12 @@ package com.example.crud.controller;
 import com.example.crud.dto.StudentDto;
 import com.example.crud.entity.Student;
 import com.example.crud.services.StudentService;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/students")
@@ -31,12 +33,16 @@ public class StudentController {
     }
 
     @PostMapping("/create")
-    public String CreateStudent(@ModelAttribute StudentDto student, BindingResult result){
+    public ModelAndView CreateStudent(@Valid @ModelAttribute("student") StudentDto student, BindingResult result){
         if(result.hasErrors()){
-            return "students/create";
+            // Log the errors to debug
+            result.getAllErrors().forEach(error -> System.out.println(error.toString()));
+            ModelAndView modelAndView = new ModelAndView("/students/create");
+            modelAndView.addObject("student",student);
+            return modelAndView;
         }
         this.studentService.saveStudent(student);
-        return "redirect:/students";
+        return new ModelAndView("redirect:/students");
     }
 
     @GetMapping("/edit/{id}")
@@ -46,22 +52,29 @@ public class StudentController {
             model.addAttribute("student", student);
             return "students/edit";
         }
-        return "redirect:/students";
+        return "error-page";
     }
 
     @PostMapping("/edit/{id}")
-    public String updateStudent(@PathVariable Integer id, @ModelAttribute StudentDto student, BindingResult result){
+    public ModelAndView updateStudent(@PathVariable Integer id, @Valid @ModelAttribute("student") StudentDto student, BindingResult result){
         if(result.hasErrors()){
-            return "students/edit";
+            result.getAllErrors().forEach(error -> System.out.println(error.toString()));
+            ModelAndView modelAndView = new ModelAndView("/students/edit");
+            modelAndView.addObject("student",student);
+            return modelAndView;
         }
         student.setId(id);
         studentService.updateStudent(id,student);
-        return "redirect:/students";
+        return new ModelAndView("redirect:/students");
     }
 
     @GetMapping("/delete/{id}")
     public String deleteStudent(@PathVariable Integer id){
-        studentService.deleteStudent(id);
-        return "redirect:/students";
+        StudentDto student = studentService.getStudentById(id);
+        if(student != null){
+            studentService.deleteStudent(id);
+            return "redirect:/students";
+        }
+        return "error-page";
     }
 }
