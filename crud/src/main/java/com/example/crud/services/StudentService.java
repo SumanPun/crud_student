@@ -13,4 +13,5 @@ public interface StudentService {
     StudentDto saveStudent(StudentDto dto);
     StudentDto updateStudent(Integer id, StudentDto student);
     void deleteStudent(Integer id);
+    List<StudentDto> searchStudent(String keywords);
 }

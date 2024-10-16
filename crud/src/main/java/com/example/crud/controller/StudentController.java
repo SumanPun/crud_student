@@ -4,11 +4,14 @@ import com.example.crud.dto.StudentDto;
 import com.example.crud.entity.Student;
 import com.example.crud.services.StudentService;
 import jakarta.validation.Valid;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/students")
@@ -26,12 +29,14 @@ public class StudentController {
         return "students/index";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/create")
     public String createStudentForm(Model model){
         model.addAttribute("student", new Student());
         return "students/create";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/create")
     public ModelAndView CreateStudent(@Valid @ModelAttribute("student") StudentDto student, BindingResult result){
         if(result.hasErrors()){
@@ -45,6 +50,7 @@ public class StudentController {
         return new ModelAndView("redirect:/students");
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/edit/{id}")
     public String editStudentForm(@PathVariable Integer id, Model model){
         StudentDto student = studentService.getStudentById(id);
@@ -52,9 +58,10 @@ public class StudentController {
             model.addAttribute("student", student);
             return "students/edit";
         }
-        return "error-page";
+        return "error";
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/edit/{id}")
     public ModelAndView updateStudent(@PathVariable Integer id, @Valid @ModelAttribute("student") StudentDto student, BindingResult result){
         if(result.hasErrors()){
@@ -68,6 +75,7 @@ public class StudentController {
         return new ModelAndView("redirect:/students");
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/delete/{id}")
     public String deleteStudent(@PathVariable Integer id){
         StudentDto student = studentService.getStudentById(id);
@@ -75,6 +83,13 @@ public class StudentController {
             studentService.deleteStudent(id);
             return "redirect:/students";
         }
-        return "error-page";
+        return "error";
+    }
+
+    @GetMapping("/search")
+    public String searchStudent(@RequestParam ("keywords") String keywords, Model model){
+        List<StudentDto> students = studentService.searchStudent("%" + keywords + "%");
+        model.addAttribute("students",students);
+        return "students/index";
     }
 }

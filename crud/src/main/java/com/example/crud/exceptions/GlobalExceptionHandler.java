@@ -8,9 +8,9 @@ import org.springframework.web.servlet.ModelAndView;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ModelAndView resourecNotFoundException(ResourceNotFoundException exception){
+    public ModelAndView resourceNotFoundException(ResourceNotFoundException exception){
         String message = exception.getMessage();
-        ModelAndView modelAndView = new ModelAndView("error-page");
+        ModelAndView modelAndView = new ModelAndView("error");
         modelAndView.addObject("errorMessage", message);
         return modelAndView;
     }

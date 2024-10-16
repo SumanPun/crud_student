@@ -53,6 +53,13 @@ public class StudentServiceImpl implements StudentService {
         this.studentRepository.deleteById(id);
     }
 
+    @Override
+    public List<StudentDto> searchStudent(String keywords) {
+        List<Student> students = this.studentRepository.searchByKeywords(keywords);
+        List<StudentDto> studentList = students.stream().map((s)-> this.getStudentDto(s)).collect(Collectors.toList());
+        return studentList;
+    }
+
     private StudentDto getStudentDto(Student student){
         StudentDto dto = new StudentDto();
         dto.setId(student.getId());
